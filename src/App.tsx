@@ -1,25 +1,52 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import './styles/App.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import WelcomePage from './pages/WelcomePage';
+import FileUploadPage from './pages/FileUploadPage';
+import { msalInstance } from './auth/AuthService';
+
 
 function App() {
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  useEffect(() => {
+    const initializeMsal = async () => {
+      try {
+        await msalInstance.initialize();
+        
+        // Handle redirect response
+        const response = await msalInstance.handleRedirectPromise();
+        const accounts = msalInstance.getAllAccounts();
+        if (accounts.length > 0) {
+            msalInstance.setActiveAccount(accounts[0]);
+}
+
+        if (response) {
+          window.location.href = '/upload';         
+        }
+        
+        setIsInitialized(true);
+      } catch (error) {
+        console.error('MSAL initialization failed:', error);
+        setIsInitialized(true); // Still set to true to show the app
+      }
+    };
+
+    initializeMsal();
+  }, []);
+  
+
+  if (!isInitialized) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<WelcomePage />} />
+        <Route path="/upload" element={<FileUploadPage />} />
+      </Routes>
+    </Router>
   );
 }
 
