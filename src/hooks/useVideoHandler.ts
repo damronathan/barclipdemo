@@ -86,6 +86,8 @@ export function useVideoHandler() {
       }
 
       await videoClient.uploadVideoToBlob(video, uploadResponse.uploadSasUrl, uploadResponse.userId);
+      
+      console.log('File successfully uploaded to blob storage. Trim pending...');
 
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Upload failed';

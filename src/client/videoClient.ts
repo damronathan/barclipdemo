@@ -43,6 +43,11 @@ export async function uploadVideoToBlob(videoFile: File, uploadSasUrl: string, u
     headers: {
       'x-ms-blob-type': 'BlockBlob',
       'x-ms-meta-userId': userId,
+      'x-ms-meta-VideoId': "8af5aac8-ec58-46bf-828e-04bbf0f580b3", // Ensure this is a string
+      'x-ms-meta-SessionId': "6bd200a1-f98f-43f1-ab2a-b7122d77f171",
+      'x-ms-meta-CreatedAt': new Date().toISOString(), // Standard date string
+      'x-ms-meta-OrderNumber': "1",
+      'x-ms-meta-IsFull': "false",
     },
   });
 
